@@ -1,23 +1,31 @@
 package contacts
 
-fun String.answer(): Any {
-    println(this)
+import kotlin.reflect.KFunction0
+
+fun String.answer(): String {
+    print(this)
     return readln()
 }
 
 object Application {
-    fun dialog() {
-        val name = "Enter the name of the person:".answer() as String
-        val surName = "Enter the surname of the person:".answer() as String
-        val number = "Enter the number:".answer() as String
-        val record = PhoneBook.Record()
-        record.firstName = name
-        record.surName = surName
-        record.number = number
-        PhoneBook(record)
+    fun menu() {
+        val book = PhoneBook()
+        val menuMap = mapOf(
+            "add" to book::add,
+            "list" to book::list,
+            "count" to book::count,
+            "edit" to book::edit,
+            "remove" to book::remove
+        )
+        while (true) {
+            val action = "Enter action (add, remove, edit, count, list, exit):".answer()
+            if (action == "exit") break
+            val a = menuMap[action] as KFunction0<Unit>
+            a()
+        }
     }
 }
 
 fun main() {
-    Application.dialog()
+    Application.menu()
 }
