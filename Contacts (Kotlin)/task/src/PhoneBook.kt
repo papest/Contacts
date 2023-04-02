@@ -5,7 +5,7 @@ class PhoneBook {
 
     class Record {
         private val regex =
-            "\\+?((\\([\\da-zA-Z]+\\))|([\\da-zA-Z]+))(([ ]|[-])((\\([\\da-zA-Z]{2,}\\))|([\\da-zA-Z]{2,})))?(([ ]|[-])[\\da-zA-Z]{2,})*".toRegex()
+            "\\+?((\\([\\da-zA-Z]+\\))|([\\da-zA-Z]+))(([ -])((\\([\\da-zA-Z]{2,}\\))|([\\da-zA-Z]{2,})))?(([ -])[\\da-zA-Z]{2,})*".toRegex()
         private var firstName = ""
         private var surName = ""
         private var number = ""
