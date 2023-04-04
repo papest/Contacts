@@ -12,16 +12,17 @@ object Application {
         val book = PhoneBook()
         val menuMap = mapOf(
             "add" to book::add,
-            "list" to book::list,
             "count" to book::count,
             "edit" to book::edit,
-            "remove" to book::remove
+            "remove" to book::remove,
+            "info" to book::info
         )
         while (true) {
-            val action = "Enter action (add, remove, edit, count, list, exit):".answer()
+            val action = "Enter action (add, remove, edit, count, info, exit):".answer()
             if (action == "exit") break
             val a = menuMap[action] as KFunction0<Unit>
             a()
+            println()
         }
     }
 }
