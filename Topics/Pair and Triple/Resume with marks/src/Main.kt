@@ -1,0 +1,1 @@
+fun resume(marks: Triple<String, Int, List<Double>>): Pair<String, Double> = Pair(marks.first, marks.third.average())
