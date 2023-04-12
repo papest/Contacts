@@ -1,0 +1,1 @@
+fun isPalindrome(str: CharSequence): Boolean = str.toString().reversed() == str.toString()
