@@ -1,0 +1,1 @@
+operator fun Ship.plus(other: Ship): Int = ammunition + other.ammunition
