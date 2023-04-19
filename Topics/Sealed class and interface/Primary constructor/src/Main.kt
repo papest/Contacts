@@ -1,0 +1,1 @@
+sealed class MySealedClass(var data: String)
