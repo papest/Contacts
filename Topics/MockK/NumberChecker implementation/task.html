@@ -1,0 +1,69 @@
+<h2>NumberChecker implementation</h2>
+<html>
+ <head></head>
+ <body>
+  <p></p> 
+  <p>You need to write a program that will check whether the number you enter is even or odd. To do this, you must write a function that will take a number and return the string "even" or "odd" depending on what number was entered.</p> 
+  <p>Look at the test class that your <code class="java">NumberChecker</code> class can test:</p> 
+  <pre><code class="java">class NumberCheckerTest {
+    @Test
+    fun `Test checkNumber function with even number`() {
+        val numberChecker = NumberChecker()
+        val userInput = mockk&lt;Int&gt;()
+        every { userInput } returns 2
+        
+        val result = numberChecker.checkNumber(userInput)
+        
+        assertEquals("even", result)
+    }
+    
+    @Test
+    fun `Test checkNumber function with odd number`() {
+        val numberChecker = NumberChecker()
+        val userInput = mockk&lt;Int&gt;()
+        every { userInput } returns 3
+        
+        val result = numberChecker.checkNumber(userInput)
+        
+        assertEquals("odd", result)
+    }
+    
+    @Test
+    fun `Test checkNumber function with zero`() {
+        val numberChecker = NumberChecker()
+        val userInput = mockk&lt;Int&gt;()
+        every { userInput } returns 0
+        
+        val result = numberChecker.checkNumber(userInput)
+        
+        assertEquals("even", result)
+    }
+    
+    @Test
+    fun `Test checkNumber function with negative even number`() {
+        val numberChecker = NumberChecker()
+        val userInput = mockk&lt;Int&gt;()
+        every { userInput } returns -2
+        
+        val result = numberChecker.checkNumber(userInput)
+        
+        assertEquals("even", result)
+    }
+    
+    @Test
+    fun `Test checkNumber function with negative odd number`() {
+        val numberChecker = NumberChecker()
+        val userInput = mockk&lt;Int&gt;()
+        every { userInput } returns -3
+        
+        val result = numberChecker.checkNumber(userInput)
+        
+        assertEquals("odd", result)
+    }
+}</code></pre> 
+  <p>Write an implementation of the <code class="java">NumberChecker</code> class to be tested by the class of submitted tests.</p>
+ </body>
+</html><br><br><font color="gray">Memory limit: 256 MB</font><br><font color="gray">Time limit: 8 seconds</font><br><br>
+<b>Caution</b><br><br>
+You may see errors in your code or execution results due to missing context. Don’t worry about it, just write the solution and press Check.
+<br><br>
