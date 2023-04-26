@@ -9,13 +9,13 @@ class PhoneBook {
     private val phoneBook = mutableListOf<Record>()
 
     open class Record {
-        open val editFields: String = ""
+        open val editFields: List<String> = mutableListOf()
         private val regex =
             "\\+?((\\([\\da-zA-Z]+\\))|([\\da-zA-Z]+))(([ -])((\\([\\da-zA-Z]{2,}\\))|([\\da-zA-Z]{2,})))?(([ -])[\\da-zA-Z]{2,})*".toRegex()
         var number = ""
             set(value) {
                 field = if ("\\(".toRegex().findAll(value)
-                        .count() < 2 && checkNumber(value)
+                        .count() < 2 && checkPhoneNumber(value)
                 ) value else {
                     println("Wrong number format!")
                     ""
@@ -24,7 +24,7 @@ class PhoneBook {
         private val createdTime = now()
         var updatedTime: Instant = createdTime
 
-        private fun checkNumber(number: String): Boolean {
+        private fun checkPhoneNumber(number: String): Boolean {
             return regex.matches(number)
         }
 
@@ -41,10 +41,54 @@ class PhoneBook {
         open fun info() = """Number: ${if (hasNumber()) number else "[no number]"} 
 Time created: $createdTime 
 Time last edit: $updatedTime"""
+
+        open fun allFieldsString(): String = number
+
+    }
+
+    fun list() {
+        val result = phoneBook.indices.toList()
+        println(result.joinToString("\n") { "${it + 1}. ${phoneBook[result[it]]}" })
+        val action = enterAction(listOf("[number], back"), "list")
+        when {
+            action == "back" -> return
+            action.isInt() && (action.toInt() in 1..result.size) -> record(result[action.toInt() - 1])
+        }
+
+    }
+
+    fun search() {
+        while (true) {
+            val searchString = "Enter search query:".answer().lowercase().toRegex()
+            val result =
+                phoneBook.indices.filter { searchString.containsMatchIn(phoneBook[it].allFieldsString().lowercase()) }
+            println("Found ${result.size} results:")
+            if (result.isEmpty()) return
+            println(result.indices.joinToString("\n") { "${it + 1}. ${phoneBook[result[it]]}" })
+            val action = enterAction(listOf("[number], back, again"), "search")
+            when {
+                action == "back" -> break
+                action == "again" -> continue
+                action.isInt() && action.toInt() in 1..result.size -> {
+                    record(result[action.toInt() - 1])
+                    break
+                }
+
+            }
+        }
+
+    }
+
+    private fun record(index: Int) {
+        println(phoneBook[index].info())
+        when (enterAction(listOf("edit", "delete", "menu"), "record")) {
+            "edit" -> edit(index)
+            "delete" -> edit(index)
+        }
     }
 
     class PersonRecord : Record() {
-        override val editFields = "name, surname, birth, gender, number"
+        override val editFields = listOf("name", "surname", "birth", "gender", "number")
         private var firstName: String = ""
         private var surName: String = ""
         private var gender: String? = null
@@ -96,11 +140,13 @@ Birth date: ${birthDay ?: NO_DATA}
 Gender: ${gender ?: NO_DATA}
 """ + super.info()
 
+        override fun allFieldsString(): String = "${super.allFieldsString()}\n$firstName $surName\n$birthDay\n$gender"
+
         override fun toString(): String = "$firstName $surName"
     }
 
     class OrganizationRecord : Record() {
-        override val editFields = "address, number"
+        override val editFields = listOf("name", "address", "number")
         private var organizationName = ""
         private var address = ""
 
@@ -114,6 +160,7 @@ Gender: ${gender ?: NO_DATA}
             when (fieldName) {
                 "address" -> address = value
                 "number" -> number = value
+                "name" -> organizationName = value
             }
             super.setField(fieldName, value)
         }
@@ -121,6 +168,8 @@ Gender: ${gender ?: NO_DATA}
         override fun info(): String = """Organization name: $organizationName
 Address: $address
 """ + super.info()
+
+        override fun allFieldsString(): String = "${super.allFieldsString()}\n$organizationName\n $address\n"
 
         override fun toString(): String = organizationName
 
@@ -135,18 +184,12 @@ Address: $address
         println("The record added.")
     }
 
-    fun edit() {
-        if (phoneBook.isEmpty()) {
-            println("No records to edit!")
-            return
-        }
-        println(this)
-        val ind = "Select a record:".answer().toInt() - 1
-        val fieldName = "Select a field (${phoneBook[ind].editFields}):".answer()
-        val value = "Enter $fieldName:".answer()
-        phoneBook[ind].setField(fieldName, value)
-        println("The record updated!")
+    fun edit(index: Int) {
 
+        val fieldName = "Select a field (${phoneBook[index].editFields.joinToString()}):".answer()
+        val value = "Enter $fieldName:".answer()
+        phoneBook[index].setField(fieldName, value)
+        println("The record updated!")
     }
 
     fun info() {
@@ -172,6 +215,11 @@ Address: $address
         val ind = "Select a record:".answer().toInt() - 1
         phoneBook.removeAt(ind)
         println("The record removed!")
+    }
+
+    fun delete(index: Int) {
+        phoneBook.removeAt(index)
+        println("The record deleted!")
     }
 
     override fun toString(): String = phoneBook.indices.joinToString("\n") { "${it + 1}. ${phoneBook[it]}" }
